@@ -1,5 +1,7 @@
 # Additional ignore files
 *.xlsx
+*.mp4
+*.gif
 *.png
 
 # Byte-compiled / optimized / DLL files
