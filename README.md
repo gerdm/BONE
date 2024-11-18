@@ -1,5 +1,7 @@
 # BONE: Bayesian online learning in non-stationary enviornments
 
+**Paper** 📄: https://arxiv.org/abs/2411.10153
+
 ![all-test](https://github.com/user-attachments/assets/301aa490-edf4-4661-bc16-6853e2c0c947)
 
 
