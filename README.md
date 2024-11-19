@@ -1,4 +1,4 @@
-# BONE: Bayesian online learning in non-stationary enviornments
+# BONE: Bayesian online learning in non-stationary environments
 
 **Paper** 📄: https://arxiv.org/abs/2411.10153
 
