@@ -1,0 +1,397 @@
+<!-- Based on a poster template from https://github.com/cpitclaudel/academic-poster-template -->
+<!--- See also https://github.com/vighneshiyer/publications/tree/master/posters -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BONE — generalised Bayesian online learning in non-stationary environments</title>
+        <link rel="icon" href="figs/logos/favicon.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="index.css">
+        <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1">
+        <!-- MathJax -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.min.js" integrity="sha512-PbLRl9V4qEM7j3xggKupLNdcodHT0w+x77S/JoTWxrhPEVZ0NkTPp90bzUeTyFXsBzsaApVOZdCHIzL6o51KiA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/mono-blue.min.css" integrity="sha512-9MaxPqXjPueWIGbV9cvVzkGnBxywb1kSNUtjm5Ttnk0ltKD23voJdHxAh6y9k10CwWwrFiFn49FG88KZuFzbTg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js" integrity="sha512-bgHRAiTjGrzHzLyKOnpFvaEpGzJet3z4tZnXGjpsCcqOnAH6VGUx9frc5bcIhKTVLEiCO6vEhNAgx5jtLUYrfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/scala.min.js" integrity="sha512-V270YlcVZGteVNcd3wOMtRGK/UBHMZKx7/UR9bcQx4jhg8MkWcfHrCQlEbhlBu6MhHRa88bOBPbfxfqVUO3fOQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/verilog.min.js" integrity="sha512-4xzKcnOhXeYySC/PneV7sO832OyA5c0IYis5M6OQ6Bncw3F85K+xJk2uh4WNZSWONWBRKlxMPhJe3MmmgVWccw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script defer>hljs.highlightAll();</script>
+        <!-- fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    </head>
+    <body vocab="http://schema.org/" typeof="ScholarlyArticle">
+        <header role="banner">
+            <aside>
+                <img src="./qr-code.png" alt="QR Code to Paper" style="width: 100px; height: auto;" />
+            </aside>
+            <div>
+                <h1 property="headline">BONE</h1>
+                <h2 property="alternativeHeadline">A unifying framework for generalised Bayesian online learning in non-stationary environments</h2>
+                <address>
+                    <a property="author">G. Duran-Martin<sup>a,b</sup></a>,
+                    <a property="author">A.Y. Shestopaloff<sup>a</sup></a>,
+                    <a property="author">L. Sanchez-Betancourt<sup>b,c</sup></a>,
+                    <a property="author">K. Murphy<sup>d</sup></a>.
+                    <br /> 
+                    <sup>a</sup><a property="sourceOrganization">Queen Mary University</a>,
+                    <sup>b</sup><a property="sourceOrganization">Oxford-Man Institute of Quantitative Finance</a>,
+                    <sup>c</sup><a property="sourceOrganization">University of Oxford</a>,
+                    <sup>d</sup><a property="sourceOrganization">Google Deepmind</a>.
+                </address>
+                <span class="publication-info">
+                <span property="publisher">TMRL</span>,
+                <time pubdate property="datePublished" datetime="2025-05-13">March 13, 2025</time>
+                </span>
+            </div>
+            <aside>
+            </aside>
+        </header>
+        <main property="articleBody">
+            <article propert="abstract">
+                <header>
+                    <h3>TL;DR</h3>
+                </header>
+                <p>
+                <strong>
+                    The BONE framework allows the classification and development of new online learning algorithms
+                    in non-stationary environments.
+                </strong>
+                </p>
+                <p>
+                    Our framework encompasses methods in
+                    the <strong>filtering</strong> literature (e.g., Kalman filter),
+                    the <strong>segmentation</strong> literature (e.g., Bayesian online changepoint detection),
+                    the <strong>continual learning</strong> literature (e.g., variational continual learning),
+                    the <strong>contextual bandit</strong> literature (e.g., Bayesian neural bandits), and
+                    the <strong>forecasting</strong> literature (e.g., Bayesian ensemble models).
+                </p>
+                <figure>
+                    <img src="BONE-SSM.png" style="width: 80%; height:auto">
+                    <figcaption>
+                        State-space model (SSM) induced by BONE.
+                    </figcaption>
+                </figure>
+            </article>
+            <article>
+                <header>
+                    <h3>BONE components</h3>
+                </header>
+                <!--- We create a list of components -->
+                <ul>
+                    <li>(M.1) A model for observations (conditioned on features \({\bf x}_t\)) — \(h(\theta, {\bf x}_t)\)</li>
+                    <li>(M.2) An auxiliary variable to track regime changes — \(\psi_t\)</li>
+                    <li>
+                        (M.3) A model for prior beliefs (conditioned on \(\psi_t\) and data \(\cal D_{1:t}\)) — 
+                        \(\pi(\theta; \psi_t, {\cal D}_{1:t-1})\)
+                    </li>
+                    <li>
+                        (A.1) An algorithm for weighting choices of \(\theta\) —
+                        \(q(\theta; \psi_t, {\cal D}_{1:t})\)
+                    </li>
+                    <li>
+                        (A.1) An algorithm for weighting choices of \(\psi_t\) —
+                        \(\nu(\psi_t, {\cal D}_{1:t})\)
+                    </li>
+                </ul>
+                <p>
+                    The expected posterior predictive under BONE is
+                    $$
+                    \begin{aligned}
+                        &\hat{\bf y}_t
+                            = \sum_{\psi_t \in \Psi_t} \nu(\psi_t, {\cal D}_{1:t})\,
+                            \int q(\theta; \psi_t, {\cal D}_{1:t})\,
+                            h(\theta, {\bf x}_t)\,d\theta,\\
+                        &\\
+                        &q(\theta; \psi_t, {\cal D}_{1:t})
+                            \propto \exp(-\ell_t(\theta))\,\pi(\theta; \psi_t, {\cal D}_{1:t-1}).
+                    \end{aligned}
+                    $$
+                </p>
+            </article>
+            <!--- Model for observations -->
+            <article>
+                <header>
+                    <h3>(M.1) Model for observations</h3>
+                </header>
+                <p>
+                    <strong>
+                        Represents the function that maps the features \({\bf x}_t\) to the observations \({\bf y}_t\).
+                    </strong>
+
+                    Choice is dependent on the nature of the data and the environment.
+                </p>
+                <p>
+                    <strong>Simple linear models</strong>
+                    $$
+                    \begin{aligned}
+                        &\text{(Regression)}\\
+                        &h(\theta, {\bf x}_t) = \theta^\intercal\,{\bf x}_t\\
+                        &\\
+                        &\text{(Classification)}\\
+                        &h(\theta, {\bf x}_t) = \sigma(\theta^\intercal\,{\bf x}_t)
+                    \end{aligned}
+                    $$
+                </p>
+                <p>
+                    <strong>Extensions to complex models</strong>
+                    <ol>
+                        <li>Neural networks:  For non-linear relationships and complex patterns (e.g., CIFAR-100 dataset).</li>
+                        <li>Time-series models: to model temporal dependencies (e.g., LSTM, ARIMA).</li>
+                    </ol>
+                    <figure>
+                        <img src="bone-m1.png" style="width: 50%; height:auto">
+                        <figcaption>
+                            Choice of measurement model \(h(\theta, {\bf x}_t)\) in BONE.
+                        </figcaption>
+                    </figure>
+                </p>
+
+            </article>
+
+            <!--- Choice of auxiliary variable -->
+            <article>
+                <header>
+                    <h3>(M.2) Choice of auxiliary variable</h3>
+                </header>
+                <strong>
+                    Encodes our belief about what a "regime" is.
+                </strong>
+                <table>
+                    <tr>
+                      <th>name</th>
+                      <th>values</th>
+                      <th>cardinality</th>
+                    </tr>
+                    <tr>
+                      <td><code>C</code></td>
+                      <td>\(\{c\}\)</td>
+                      <td>\(1\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>CPT</code></td>
+                      <td>\(2^{ \{0, 1, \ldots, t\} }\)</td>
+                      <td>\(2^t\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>CPP</code></td>
+                      <td>\([0,1]\)</td>
+                      <td>\(\infty\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>CPL</code></td>
+                      <td>\(\{0,1\}^t\)</td>
+                      <td>\(2^t\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>CPV</code></td>
+                      <td>\((0,1)^t\)</td>
+                      <td>\(\infty\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>ME</code></td>
+                      <td>\(\{1, \ldots, K\}\)</td>
+                      <td>\(K\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>RL</code></td>
+                      <td>\(\{0, 1, \ldots, t\}\)</td>
+                      <td>\(t\)</td>
+                    </tr>
+                    <tr>
+                      <td><code>RLCC</code></td>
+                      <td>\(\{\{0, t\}, \ldots, \{t, 0\}\}\)</td>
+                      <td>\(2 + t(t+1)/2\)</td>
+                    </tr>
+                  </table>
+                  <p>
+                    <code>C</code> is constant,
+                    <code>CPT</code> is changepoint timestep,
+                    <code>CPP</code> is changepoint probability,
+                    <code>CPL</code> is changepoint location,
+                    <code>CPV</code> is changepoint probability vector,
+                    <code>ME</code> is mixture of experts,
+                    <code>RL</code> is runlength,
+                    <code>RLCC</code> is runlength with changepoint count.
+                  </p>
+                <figure>
+                    <img src="bone-m2.png" style="width: 15%; height:auto">
+                    <figcaption>
+                        Choice of auxiliary variable \(\psi_t\).
+                    </figcaption>
+                </figure>
+            </article>
+
+            <!--- Model for conditional priors -->
+            <article>
+                <header>
+                    <h3>(M.3) Model for conditional priors</h3>
+                </header>
+                <strong>
+                    Modify prior beliefs about the model parameters based on past data and the auxiliary variable.
+                </strong>
+                <p>
+                    In the Gaussian case, the conditional prior modifies the mean and covariance
+                    $$
+                    \begin{aligned}
+                    &\pi(\theta_t;\, \psi_t,\, {\cal D}_{1:t-1}) \\
+                    &={\cal N}\big(\theta_t\vert g_{t}(\psi_t, {\cal D}_{1:t-1}), G_{t}(\psi_t, {\cal D}_{1:t-1})\big).
+                    \end{aligned}
+                    $$
+                </p>
+                <strong>Examples</strong>
+                <p>
+                    <code>C-static</code>: constant auxvar with static updates.
+                    $$
+                    \begin{aligned}
+                    &g_{t}(\psi_t, {\cal D}_{1:t-1}) = \mu_{t-1},\\
+                    &G_{t}(\psi_t, {\cal D}_{1:t-1}) = \Sigma_{t-1}.
+                    \end{aligned}
+                    $$
+                </p>
+                <hr>
+                <p>
+                    <code>RL-PR</code>: runlength with prior reset
+                    $$
+                    \begin{aligned}
+                    &g_{t}(\psi_t, {\cal D}_{1:t-1}) = \mu_{0}{\mathbb 1}(\psi_t = 0) + \mu_{(\psi_{t-1})}{\mathbb 1}(\psi_t > 0),\\
+                    &G_{t}(\psi_t, {\cal D}_{1:t-1}) = \Sigma_{0}{\mathbb 1}(\psi_t = 0) + \Sigma_{(\psi_{t-1})}{\mathbb 1}(\psi_t > 0).
+                    \end{aligned}
+                    $$
+                    The subscript \((\psi_t)\) denotes the posterior mean and covariance using the last \(\psi_t > 0\) observations.
+                </p>
+                <hr>
+                <p>
+                    <code>RL-OUPR</code>: Runlength with OU prior discount or prior reset
+                    $$
+                    g_{t}(\psi_t, {\cal D}_{1:t-1}) = 
+                    \begin{cases}
+                        \mu_0\,(1 - \nu_t(\psi_t)) + \mu_{(\psi_{t-1})}\,\nu_t(\psi_t) & \text{if } \psi_t > 0,\\
+                        \mu_0 & \text{if } \psi_t = 0.
+                    \end{cases}
+                    $$
+                </p>
+                <figure>
+                    <img src="bone-m3.png" style="width: 50%; height:auto">
+                    <figcaption>
+                        Choice of auxiliary variable \(\psi_t\).
+                    </figcaption>
+                </figure>
+            </article>
+
+            <!--- Algorithm for weighting choices of theta -->
+            <article>
+                <header>
+                    <h3>(A.1 / A.2) Algorithm for posterior update for parameters \(\theta\) and auxiliary variables \(\psi_t\)</h3>
+                </header>
+                <p>
+                    $$
+                    \begin{aligned}
+                        q(\theta; \psi_t, {\cal D}_{1:t}) & \text{ posterior update}\\
+                        \nu(\psi_t, {\cal D}_{1:t}) & \text{ weight update}
+                    \end{aligned}
+                    $$
+                    <ul>
+                        <li>Variational Bayes (VB)</li>
+                        <li>Conjugate updates</li>
+                        <li>Particle filters</li>
+                        <li>Linearised updates</li>
+                        <li>Replay-buffer stochastic gradient descent</li>
+                    </ul>
+                </p>
+            </article>
+
+            <!--- Examples in the literature -->
+            <article>
+                <header>
+                    <h3>Examples in the literature</h3>
+                </header>
+                <figure>
+                    <img src="bone-examples.png" style="width: 85%; height:auto">
+                    <figcaption>
+                        Examples of BONE in the literature.
+                    </figcaption>
+                </figure>
+            </article>
+
+            <!--- Experiment: Forecasting under distribution shift -->
+            <article>
+                <header>
+                    <h3>Experiment: Forecasting under distribution shift</h3>
+                </header>
+                <p>
+                    We evaluate members of the BONE framework on electricity load forecasting during the Covid-19 pandemic.
+                    Our choice of measurement model h (M.1) is a two-hidden layer multilayered perceptron (MLP) with four units per
+                    layer and a ReLU activation function.
+                    Features are lagged by one hour.
+                </p>
+                <figure>
+                    <img src="day-ahead-dataset.png" style="width: 80%; height:auto">
+                    <figcaption>
+                        Forecasting under distribution shift:
+                        changes in the output \({\bf y}_t\) (electricity load) are not
+                        reflected in the input \({\bf x}_t\) (weather features).
+                    </figcaption>
+                </figure>
+
+            </article>
+            <article>
+                <header>
+                    <h3>Results</h3>
+                </header>
+                <figure>
+                    <img src="day-ahead-forecast.png" style="width: 50%; height:auto">
+                    <img src="day-ahead-results.png" style="width: 50%; height:auto">
+                    <figcaption>
+                        Top: Forecasting results.
+                        Bottom: 5-day mean absolute error (MAE).
+                    </figcaption>
+                </figure>
+            </article>
+
+        </main>
+        <footer>
+            <aside>
+                <small>
+                    <pre>github.com/gerdm/BONE</pre>
+                </small>
+            </aside>
+            <div>
+            </div>
+            <aside>
+            </aside>
+        </footer>
+    </body>
+</html>
+
+<!--- Experiment: Online continual learning for regression -->
+<!---
+<article>
+    <header>
+        <h3>Experiment: Online continual learning for regression</h3>
+    </header>
+    <strong>
+        We show that the BONE framework can be used to
+        develop a robust method for online continual learning
+        in non-stationary environments with outliers.
+    </strong>
+</article>
+
+<article>
+    <header>
+        <h3>Experiment: Linear online continual learning</h3>
+    </header>
+    <p>
+        We evaluate the BONE framework on a synthetic dataset
+        with a non-stationary linear regression problem.
+    </p>
+    <figure>
+        <img src="rlpr-tnoise-rl-log-posterior.png">
+        <img src="rlpr-wolf-tnoise-rl-log-posterior.png">
+        <figcaption>
+            Linear regression
+        </figcaption>
+    </figure>
+</article>
+--->
